@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xưởng Chế Nhiệm Vụ · Tu Tiên</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a1210;
+    --ink-2:#0f1a17;
+    --panel:#12201c;
+    --panel-2:#16261f;
+    --line: rgba(216,169,65,0.18);
+    --line-soft: rgba(233,226,207,0.08);
+    --gold:#d8a941;
+    --gold-soft:#f0cf7a;
+    --jade:#3ea882;
+    --jade-soft:#7fd4b3;
+    --cyan:#7fd8cf;
+    --cinnabar:#c1503a;
+    --parchment:#e9e2cf;
+    --muted:#93a099;
+    --muted-2:#5f6d67;
+    --radius: 14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1100px 620px at 12% -10%, rgba(216,169,65,0.10), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(62,168,130,0.10), transparent 55%),
+      repeating-linear-gradient(115deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px),
+      var(--ink);
+    color:var(--parchment);
+    font-family:'Be Vietnam Pro', sans-serif;
+    min-height:100vh;
+    padding:28px 20px 64px;
+  }
+  .mono{font-family:'JetBrains Mono', monospace;}
+  .wrap{max-width:1180px;margin:0 auto;}
+
+  /* ---------- Header ---------- */
+  header{
+    display:flex;align-items:center;gap:16px;
+    margin-bottom:26px;
+    padding-bottom:20px;
+    border-bottom:1px solid var(--line);
+  }
+  .glyph-seal{
+    width:52px;height:52px;flex:none;border-radius:50%;
+    background: radial-gradient(circle at 32% 28%, #3a2c12, #1c150a 70%);
+    border:1.5px solid var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--gold-soft);font-size:24px;font-weight:700;
+    box-shadow: 0 0 0 3px rgba(216,169,65,0.08), 0 0 18px rgba(216,169,65,0.18);
+  }
+  header h1{
+    margin:0; font-size:26px; letter-spacing:0.3px; font-weight:800;
+    background:linear-gradient(90deg, var(--gold-soft), var(--gold) 60%, #b98a34);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  header p{margin:4px 0 0; color:var(--muted); font-size:13.5px;}
+
+  .banner{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:14px 18px; margin-bottom:24px; font-size:13.5px; line-height:1.6; color:var(--muted);
+  }
+  .banner b{color:var(--gold-soft); font-weight:700;}
+
+  /* ---------- Layout ---------- */
+  .grid{
+    display:grid; grid-template-columns: minmax(0,420px) minmax(0,1fr);
+    gap:22px; align-items:start;
+  }
+  @media (max-width: 880px){ .grid{grid-template-columns:1fr;} }
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:20px;
+  }
+  .card + .card{margin-top:18px;}
+  .card h2{
+    margin:0 0 14px; font-size:14px; letter-spacing:1px; text-transform:uppercase;
+    color:var(--gold-soft); font-weight:700; display:flex; align-items:center; gap:8px;
+  }
+  .card h2 .num{
+    width:20px;height:20px;border-radius:50%;background:rgba(216,169,65,0.15);
+    border:1px solid var(--line); display:inline-flex;align-items:center;justify-content:center;
+    font-size:11px; color:var(--gold-soft);
+  }
+
+  label{display:block; font-size:12.5px; color:var(--muted); margin:12px 0 6px; font-weight:500;}
+  label:first-child{margin-top:0;}
+  label .req{color:var(--cinnabar);}
+  input[type=text], input[type=number], textarea, select{
+    width:100%; background:var(--ink-2); border:1px solid var(--line-soft); color:var(--parchment);
+    border-radius:9px; padding:10px 12px; font-family:inherit; font-size:13.5px; outline:none;
+    transition:border-color .15s;
+  }
+  input::placeholder, textarea::placeholder{color:var(--muted-2);}
+  input:focus, textarea:focus, select:focus{border-color:var(--gold);}
+  textarea{resize:vertical; min-height:64px; line-height:1.5;}
+  select{appearance:none; background-image:linear-gradient(45deg, transparent 50%, var(--gold) 52%), linear-gradient(135deg, var(--gold) 48%, transparent 50%); background-position: calc(100% - 18px) center, calc(100% - 13px) center; background-size:5px 5px, 5px 5px; background-repeat:no-repeat; padding-right:32px;}
+  .two-col{display:grid; grid-template-columns:1fr 100px; gap:10px;}
+  .three-col{display:grid; grid-template-columns:1fr 1fr 90px; gap:10px;}
+
+  .row{
+    background:var(--ink-2); border:1px solid var(--line-soft); border-radius:10px;
+    padding:12px; margin-bottom:10px; position:relative;
+  }
+  .row-remove{
+    position:absolute; top:8px; right:8px; width:22px;height:22px; border-radius:6px;
+    background:rgba(193,80,58,0.12); border:1px solid rgba(193,80,58,0.4); color:#e79684;
+    cursor:pointer; font-size:13px; line-height:1; display:flex;align-items:center;justify-content:center;
+  }
+  .row-remove:hover{background:rgba(193,80,58,0.25);}
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    border-radius:9px; border:1px solid var(--line-soft); background:var(--panel-2);
+    color:var(--parchment); font-family:inherit; font-size:12.5px; font-weight:600;
+    padding:9px 14px; cursor:pointer; transition:all .15s;
+  }
+  .btn:hover{border-color:var(--gold); color:var(--gold-soft);}
+  .btn-add{width:100%; border-style:dashed; color:var(--muted);}
+  .btn-gold{
+    width:100%; margin-top:18px; padding:13px 16px; font-size:14px;
+    background:linear-gradient(180deg, var(--gold-soft), var(--gold));
+    color:#241a06; border:none; font-weight:800; letter-spacing:0.3px;
+  }
+  .btn-gold:hover{filter:brightness(1.06); color:#241a06;}
+  .btn-ghost{background:transparent;}
+  .btn-copy{font-size:11.5px; padding:6px 10px;}
+  .btn-copy.done{border-color:var(--jade); color:var(--jade-soft);}
+
+  .toggle-row{display:flex; align-items:center; gap:9px; margin-top:14px; cursor:pointer; user-select:none;}
+  .toggle{width:34px;height:19px;border-radius:20px;background:var(--ink-2); border:1px solid var(--line-soft); position:relative; flex:none; transition:background .15s;}
+  .toggle::after{content:'';position:absolute; top:2px; left:2px; width:13px;height:13px;border-radius:50%; background:var(--muted); transition:all .15s;}
+  .toggle.on{background:rgba(62,168,130,0.25); border-color:var(--jade);}
+  .toggle.on::after{left:17px; background:var(--jade-soft);}
+  .toggle-row span{font-size:12.5px; color:var(--muted);}
+  .en-fields{display:none; margin-top:6px; padding-top:6px; border-top:1px dashed var(--line-soft);}
+  .en-fields.show{display:block;}
+
+  /* ---------- Preview ---------- */
+  .scroll-card{
+    position:relative; background:
+      radial-gradient(600px 240px at 100% 0%, rgba(216,169,65,0.06), transparent 60%),
+      #0d1613;
+    border:1px solid var(--line); border-radius:var(--radius); padding:22px 22px 20px; overflow:hidden;
+  }
+  .seal{
+    position:absolute; top:14px; right:16px; width:46px;height:46px;border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #3a2c12, #17110a 75%);
+    border:1.5px solid var(--gold); display:flex;align-items:center;justify-content:center;
+    color:var(--gold-soft); font-size:20px; transform:rotate(-8deg);
+    box-shadow:0 0 16px rgba(216,169,65,0.15);
+  }
+  .prev-kicker{font-size:11px; letter-spacing:2px; color:var(--muted-2); text-transform:uppercase; margin-bottom:10px;}
+  .prev-title{font-size:19px; font-weight:700; margin-bottom:2px;}
+  .prev-title .tag{color:var(--cyan);}
+  .prev-title .name{color:var(--parchment);}
+  .prev-sub{font-size:12px; color:var(--muted-2); margin-bottom:12px;}
+  .prev-desc{font-size:13px; color:var(--muted); font-style:italic; line-height:1.6; margin-bottom:16px; max-width:80%;}
+  .prev-h{font-size:13px; font-weight:700; color:var(--parchment); margin-bottom:6px;}
+  .prev-req{font-size:12.8px; color:var(--muted); margin-bottom:3px; padding-left:2px;}
+  .prev-req b{color:var(--parchment); font-weight:600;}
+  .prev-reward{font-size:13px; margin-top:14px;}
+  .prev-reward .label{font-weight:700; color:var(--parchment);}
+  .prev-reward .val{color:var(--jade-soft);}
+
+  /* ---------- Color code toolbar ---------- */
+  .ctoolbar{display:flex; flex-wrap:wrap; align-items:center; gap:4px; margin:6px 0 2px; padding:8px; background:var(--ink-2); border:1px solid var(--line-soft); border-radius:8px;}
+  .ctoolbar .swatch{width:19px;height:19px;border-radius:4px; border:1px solid rgba(255,255,255,0.15); cursor:pointer; padding:0;}
+  .ctoolbar .swatch:hover{outline:2px solid var(--gold); outline-offset:1px;}
+  .ctoolbar .fbtn{
+    width:auto; height:19px; padding:0 7px; border-radius:4px; border:1px solid var(--line-soft);
+    background:var(--panel-2); color:var(--parchment); font-size:10.5px; font-weight:700; cursor:pointer; line-height:19px;
+  }
+  .ctoolbar .fbtn:hover{border-color:var(--gold); color:var(--gold-soft);}
+  .ctoolbar .sep{width:1px; height:16px; background:var(--line-soft); margin:0 3px;}
+  .prev-icon{display:inline-block; margin-right:6px;}
+
+  /* ---------- Steps ---------- */
+  .steps{list-style:none; margin:0; padding:0; counter-reset:step;}
+  .steps li{
+    counter-increment:step; position:relative; padding:0 0 16px 34px; font-size:13px; line-height:1.6; color:var(--muted);
+  }
+  .steps li:last-child{padding-bottom:0;}
+  .steps li::before{
+    content:counter(step); position:absolute; left:0; top:-1px; width:23px;height:23px;border-radius:50%;
+    background:rgba(216,169,65,0.14); border:1px solid var(--line); color:var(--gold-soft);
+    font-size:11.5px; font-weight:700; display:flex;align-items:center;justify-content:center;
+  }
+  .steps li::after{
+    content:''; position:absolute; left:11px; top:23px; bottom:0; width:1px; background:var(--line-soft);
+  }
+  .steps li:last-child::after{display:none;}
+  .steps li b{color:var(--parchment); font-weight:600;}
+  .steps code{background:var(--ink-2); border:1px solid var(--line-soft); border-radius:5px; padding:1.5px 6px; color:var(--jade-soft); font-size:12px;}
+
+  /* ---------- Data sheet ---------- */
+  .sheet-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
+  pre.sheet{
+    background:var(--ink-2); border:1px solid var(--line-soft); border-radius:10px; padding:14px 16px;
+    font-size:12px; line-height:1.7; color:var(--parchment); overflow-x:auto; white-space:pre-wrap; word-break:break-word;
+  }
+  pre.sheet .k{color:var(--gold-soft);}
+  pre.sheet .c{color:var(--muted-2);}
+
+  /* ---------- Bank ---------- */
+  #bankSection{margin-top:26px;}
+  .bank-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:10px;}
+  .bank-head h2{margin:0; font-size:14px; letter-spacing:1px; text-transform:uppercase; color:var(--gold-soft); font-weight:700;}
+  .bank-empty{color:var(--muted-2); font-size:13px; padding:18px 4px;}
+  .bank-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:12px;}
+  .bank-item{
+    background:var(--ink-2); border:1px solid var(--line-soft); border-radius:10px; padding:14px;
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .bank-item .bi-title{font-size:13.5px; font-weight:700; color:var(--parchment);}
+  .bank-item .bi-title span{color:var(--cyan); font-weight:600;}
+  .bank-item .bi-sub{font-size:11.5px; color:var(--muted-2);}
+  .bank-item .bi-actions{display:flex; gap:6px; margin-top:4px;}
+  .bank-item .bi-actions .btn{flex:1; padding:7px 8px; font-size:11.5px;}
+
+  .toast{
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--jade); color:#08150f; font-weight:700; font-size:13px; padding:11px 20px;
+    border-radius:30px; opacity:0; pointer-events:none; transition:all .25s; z-index:50;
+    box-shadow:0 8px 24px rgba(0,0,0,0.35);
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .hint{font-size:11.5px; color:var(--muted-2); margin-top:6px; line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="glyph-seal">令</div>
+    <div>
+      <h1>Xưởng Chế Nhiệm Vụ</h1>
+      <p>Soạn nội dung quest cho BeautyQuests — điền một lần, có ngay bản xem trước và hướng dẫn từng bước.</p>
+    </div>
+  </header>
+
+  <div class="banner">
+    <b>Lưu ý quan trọng:</b> BeautyQuests tạo nhiệm vụ hoàn toàn trong game bằng lệnh <code class="mono">/quests create</code> (không sửa file). Công cụ này giúp bạn <b>chuẩn bị sẵn</b> tên, mô tả, yêu cầu, lệnh phần thưởng… để khi vào GUI trong game bạn chỉ cần dán/gõ theo, không phải nghĩ hay tra cứu gì thêm.
+  </div>
+
+  <div class="grid">
+    <!-- ===================== FORM ===================== -->
+    <div>
+      <div class="card">
+        <h2><span class="num">1</span>Thông tin chung</h2>
+
+        <label>Tên nhiệm vụ <span class="req">*</span></label>
+        <input type="text" id="qName" placeholder="VD: Thử Thách">
+        <div class="ctoolbar" id="toolbar-qName" data-for="qName"></div>
+        <div class="hint">Bôi đen hoặc đặt con trỏ trong ô rồi bấm màu/kiểu chữ để chèn mã (§ Minecraft), hoặc gõ tay <span class="mono">&amp;a</span>, <span class="mono">&amp;l</span>… BeautyQuests sẽ hiểu mã này khi bạn dán vào.</div>
+
+        <label>Nhãn phân loại (hiện trong ngoặc vuông)</label>
+        <input type="text" id="qTag" placeholder="VD: Luyện Khí" value="Luyện Khí">
+
+        <label>Nhãn phụ nhỏ dưới tên</label>
+        <input type="text" id="qSub" placeholder="VD: Nhiệm Vụ Tu Tiên" value="Nhiệm Vụ Tu Tiên">
+
+        <label>Icon đại diện</label>
+        <select id="qIcon">
+          <option value="BOOK">📖 Sách (BOOK)</option>
+          <option value="NETHER_STAR">⭐ Sao Địa Ngục (NETHER_STAR)</option>
+          <option value="EMERALD">💚 Ngọc Lục Bảo (EMERALD)</option>
+          <option value="DIAMOND_SWORD">⚔️ Kiếm Kim Cương (DIAMOND_SWORD)</option>
+          <option value="EXPERIENCE_BOTTLE">🧪 Bình Kinh Nghiệm (EXPERIENCE_BOTTLE)</option>
+          <option value="GHAST_TEAR">💧 Lệ Ghast (GHAST_TEAR)</option>
+          <option value="BLAZE_POWDER">🔥 Bột Blaze (BLAZE_POWDER)</option>
+          <option value="ENDER_PEARL">🔮 Ngọc Ender (ENDER_PEARL)</option>
+          <option value="GOLDEN_APPLE">🍎 Táo Vàng (GOLDEN_APPLE)</option>
+          <option value="PAPER">📄 Giấy (PAPER)</option>
+        </select>
+
+        <label>Lời dẫn / mô tả nhiệm vụ</label>
+        <textarea id="qDesc" placeholder="VD: Đường tu tiên đầy gian nan, hãy chứng minh thực lực của chính mình!"></textarea>
+        <div class="ctoolbar" id="toolbar-qDesc" data-for="qDesc"></div>
+
+        <div class="toggle-row" id="enToggleRow">
+          <div class="toggle" id="enToggle"></div>
+          <span>Thêm bản tiếng Anh (tuỳ chọn)</span>
+        </div>
+        <div class="en-fields" id="enFields">
+          <label>Quest name (EN)</label>
+          <input type="text" id="qNameEn" placeholder="e.g. Trial">
+          <label>Description (EN)</label>
+          <textarea id="qDescEn" placeholder="e.g. The path of cultivation is full of hardship..."></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="num">2</span>Yêu cầu hoàn thành</h2>
+        <label>Loại mục tiêu</label>
+        <select id="qObjType">
+          <option value="kill">Giết quái (thường hoặc MythicMobs)</option>
+          <option value="collect">Thu thập / nộp vật phẩm cho NPC</option>
+          <option value="location">Đến vị trí / vùng đất (WorldGuard)</option>
+          <option value="other">Khác — hành động riêng của plugin (đột phá, luyện đan, thiền định…)</option>
+        </select>
+        <div class="hint" id="objHint"></div>
+
+        <div id="reqRows" style="margin-top:12px;"></div>
+        <div class="btn btn-add" id="addReqRow">+ Thêm dòng yêu cầu</div>
+      </div>
+
+      <div class="card">
+        <h2><span class="num">3</span>Phần thưởng</h2>
+        <div id="rewardRows"></div>
+        <div class="btn btn-add" id="addRewardRow">+ Thêm phần thưởng</div>
+      </div>
+
+      <div class="btn btn-gold" id="saveBtn">✦ Lưu nhiệm vụ vào kho ✦</div>
+    </div>
+
+    <!-- ===================== PREVIEW / OUTPUT ===================== -->
+    <div>
+      <div class="card">
+        <h2><span class="num">◎</span>Xem trước (giống trong game)</h2>
+        <div class="scroll-card">
+          <div class="seal">卷</div>
+          <div class="prev-kicker">Quests</div>
+          <div class="prev-title"><span class="tag" id="pTag">[Luyện Khí]</span> <span class="name" id="pName">Tên nhiệm vụ</span></div>
+          <div class="prev-sub" id="pSub">(0/0) [ Nhiệm Vụ Tu Tiên ]</div>
+          <div class="prev-desc" id="pDesc">Mô tả nhiệm vụ sẽ hiện ở đây…</div>
+          <div class="prev-h">Yêu cầu nhiệm vụ:</div>
+          <div id="pReqs"><div class="prev-req">» chưa có yêu cầu nào</div></div>
+          <div class="prev-reward"><span class="label">Phần thưởng: </span><span class="val" id="pReward">chưa có phần thưởng</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="num">→</span>Các bước làm trong game</h2>
+        <ol class="steps" id="stepsList"></ol>
+      </div>
+
+      <div class="card">
+        <div class="sheet-head">
+          <h2 style="margin:0;"><span class="num">⎘</span>Bản dữ liệu (để lưu lại / dán)</h2>
+          <div class="btn btn-copy" id="copySheetBtn">Sao chép</div>
+        </div>
+        <pre class="sheet" id="sheetOut"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== BANK ===================== -->
+  <div id="bankSection" class="card">
+    <div class="bank-head">
+      <h2>Kho nhiệm vụ đã lưu (<span id="bankCount">0</span>)</h2>
+      <div class="btn btn-copy" id="copyAllBtn">Sao chép tất cả</div>
+    </div>
+    <div id="bankBody"><div class="bank-empty">Chưa lưu nhiệm vụ nào — điền form phía trên rồi bấm “Lưu nhiệm vụ vào kho”.</div></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">Đã sao chép ✓</div>
+
+<script>
+// ---------------------------------------------------------------
+// Reference data pulled from the actual TuTien plugin commands
+// ---------------------------------------------------------------
+const CANH_GIOI = [
+  ["LUYEN_KHI","Luyện Khí"],["TRUC_CO","Trúc Cơ"],["KET_DAN","Kết Đan"],["NGUYEN_ANH","Nguyên Anh"],["HOA_THAN","Hóa Thần"],
+  ["DE_TU","Đế Tử"],["DE_HAU","Đế Hầu"],["DE_VUONG","Đế Vương"],["DE_TON","Đế Tôn"],["DE_CHU","Đế Chủ"],
+  ["BAN_THANH","Bán Thánh"],["CHUAN_THANH","Chuẩn Thánh"],["DAI_THANH","Đại Thánh"],["THANH_TON","Thánh Tôn"],["THANH_DE","Thánh Đế"],
+  ["CHAN_TIEN","Chân Tiên"],["KIM_TIEN","Kim Tiên"],["THAI_AT","Thái Ất"],["DAI_LA","Đại La"],["TIEN_DE","Tiên Đế"],
+  ["THIEN_TON","Thiên Tôn"],["THIEN_DAO","Thiên Đạo"],["THIEN_DE","Thiên Đế"],["HON_NGUYEN","Hỗn Nguyên"],["VO_THUONG_CHI_TON","Vô Thượng Chí Tôn"]
+];
+const PHABAO_TIER = [
+  ["DIA_PHAM","Địa Phẩm"],["HA_PHAM","Hạ Phẩm"],["TRUNG_PHAM","Trung Phẩm"],
+  ["THUONG_PHAM","Thượng Phẩm"],["DE_PHAM","Đế Phẩm"],["TIEN_PHAM","Tiên Phẩm"]
+];
+const OBJ_HINTS = {
+  kill: "Loại Stage trong BeautyQuests: <b>Kill mobs</b>. Nếu là quái tuỳ chỉnh MythicMobs, chọn chế độ MythicMobs khi thêm Stage. Nhiều bản BeautyQuests cho thêm nhiều loại quái trong cùng 1 Stage (bấm “+”) — nếu bản bạn dùng không có, tách mỗi loại quái thành 1 Stage nối tiếp.",
+  collect: "Loại Stage: <b>Bring items to NPC</b> (hoặc “Have item” tuỳ bản) — chọn vật phẩm và số lượng cần nộp/sở hữu cho từng dòng yêu cầu.",
+  location: "Loại Stage: <b>Reach location</b> / <b>Region</b> (cần cài WorldGuard nếu dùng vùng đất có tên).",
+  other: "Nhiệm vụ này (đột phá, luyện đan, thiền định…) không khớp sẵn loại Stage có trong BeautyQuests. Cách đơn giản nhất: dùng Stage kiểu <b>Command</b> làm điều kiện hoàn thành thủ công, hoặc nhờ mình viết thêm code để plugin Tu Tiên tự báo hoàn thành khi người chơi làm xong hành động đó."
+};
+
+let reqRows = [{name:"", qty:""}];
+let rewardRows = [{type:"money", amount:"500", stage:"LUYEN_KHI", tier:"DIA_PHAM", ptype:"", rawDisplay:"", rawCommand:"", displayOverride:""}];
+let bank = [];
+
+const $ = id => document.getElementById(id);
+
+function esc(s){
+  return (s||"").replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+}
+
+// ---------------------------------------------------------------
+// Minecraft color codes (&a, &l, &o...) — insert + live preview
+// ---------------------------------------------------------------
+const MC_COLORS = [
+  ["0","Đen","#000000"],["1","Xanh dương đậm","#0000AA"],["2","Xanh lá đậm","#00AA00"],["3","Ngọc đậm","#00AAAA"],
+  ["4","Đỏ đậm","#AA0000"],["5","Tím đậm","#AA00AA"],["6","Vàng gold","#FFAA00"],["7","Xám","#AAAAAA"],
+  ["8","Xám đậm","#555555"],["9","Xanh dương","#5555FF"],["a","Xanh lá","#55FF55"],["b","Ngọc/Cyan","#55FFFF"],
+  ["c","Đỏ","#FF5555"],["d","Tím hồng","#FF55FF"],["e","Vàng","#FFFF55"],["f","Trắng","#FFFFFF"]
+];
+const MC_FORMATS = [["l","B","In đậm"],["o","I","In nghiêng"],["n","U","Gạch chân"],["m","S","Gạch ngang"],["r","⟲","Xoá định dạng"]];
+
+function buildToolbar(fieldId){
+  const swatches = MC_COLORS.map(([code,label,hex])=>
+    `<button type="button" class="swatch" title="${label} (&${code})" style="background:${hex}" data-code-for="${fieldId}" data-code="&${code}"></button>`
+  ).join("");
+  const formats = MC_FORMATS.map(([code,label,title])=>
+    `<button type="button" class="fbtn" title="${title} (&${code})" data-code-for="${fieldId}" data-code="&${code}">${label}</button>`
+  ).join("");
+  return swatches + `<span class="sep"></span>` + formats;
+}
+function insertCode(fieldId, code){
+  const el = $(fieldId);
+  const start = el.selectionStart ?? el.value.length;
+  const end = el.selectionEnd ?? el.value.length;
+  el.value = el.value.slice(0,start) + code + el.value.slice(end);
+  const pos = start + code.length;
+  el.focus();
+  el.setSelectionRange(pos,pos);
+  el.dispatchEvent(new Event("input", {bubbles:true}));
+}
+document.addEventListener("click", e=>{
+  const btn = e.target.closest("[data-code-for]");
+  if(btn) insertCode(btn.getAttribute("data-code-for"), btn.getAttribute("data-code"));
+});
+["qName","qDesc"].forEach(id=>{ $("toolbar-"+id).innerHTML = buildToolbar(id); });
+
+// Parses "&a&lText &cmore" into colored/formatted <span> HTML.
+// Falls back to defaultColor for any text before the first explicit code,
+// so fields with no codes typed still look the way they always have.
+function mcToHtml(text, defaultColor){
+  text = text || "";
+  let out = "", buffer = "";
+  let color = defaultColor || null, bold=false, italic=false, underline=false, strike=false;
+  function flush(){
+    if(!buffer) return;
+    let style = "";
+    if(color) style += `color:${color};`;
+    if(bold) style += "font-weight:700;";
+    if(italic) style += "font-style:italic;";
+    const deco = [];
+    if(underline) deco.push("underline");
+    if(strike) deco.push("line-through");
+    if(deco.length) style += `text-decoration:${deco.join(" ")};`;
+    out += style ? `<span style="${style}">${esc(buffer)}</span>` : esc(buffer);
+    buffer = "";
+  }
+  for(let i=0;i<text.length;i++){
+    const ch = text[i], next = text[i+1];
+    if(ch==="&" && next && /[0-9a-fA-Fk-oK-Or]/.test(next)){
+      flush();
+      const code = next.toLowerCase();
+      const found = MC_COLORS.find(c=>c[0]===code);
+      if(found){ color = found[2]; bold=italic=underline=strike=false; }
+      else if(code==="l") bold=true;
+      else if(code==="o") italic=true;
+      else if(code==="n") underline=true;
+      else if(code==="m") strike=true;
+      else if(code==="r"){ color = defaultColor||null; bold=italic=underline=strike=false; }
+      i++;
+      continue;
+    }
+    buffer += ch;
+  }
+  flush();
+  return out || "";
+}
+
+// ---------------------------------------------------------------
+// Requirement rows
+// ---------------------------------------------------------------
+function reqRowHTML(row, i){
+  return `<div class="row" data-i="${i}">
+    ${reqRows.length>1 ? `<div class="row-remove" data-remove-req="${i}">✕</div>` : ""}
+    <div class="two-col">
+      <div>
+        <label style="margin-top:0;">Tên mục tiêu</label>
+        <input type="text" data-req-name="${i}" value="${esc(row.name)}" placeholder="VD: Tinh Thể Nhớt [LV1]">
+      </div>
+      <div>
+        <label style="margin-top:0;">Số lượng</label>
+        <input type="number" min="1" data-req-qty="${i}" value="${esc(row.qty)}" placeholder="200">
+      </div>
+    </div>
+  </div>`;
+}
+function renderReqRows(){
+  $("reqRows").innerHTML = reqRows.map(reqRowHTML).join("");
+}
+$("addReqRow").addEventListener("click", ()=>{
+  reqRows.push({name:"", qty:""});
+  renderReqRows();
+  refresh();
+});
+$("reqRows").addEventListener("input", e=>{
+  const ni = e.target.getAttribute("data-req-name");
+  const qi = e.target.getAttribute("data-req-qty");
+  if(ni!==null) reqRows[ni].name = e.target.value;
+  if(qi!==null) reqRows[qi].qty = e.target.value;
+  refresh();
+});
+$("reqRows").addEventListener("click", e=>{
+  const ri = e.target.getAttribute("data-remove-req");
+  if(ri!==null){ reqRows.splice(ri,1); renderReqRows(); refresh(); }
+});
+
+// ---------------------------------------------------------------
+// Reward rows
+// ---------------------------------------------------------------
+function rewardSubfields(row, i){
+  if(row.type==="money"){
+    return `<label style="margin-top:0;">Số Linh Thạch</label>
+      <input type="number" min="1" data-rw-amount="${i}" value="${esc(row.amount)}" placeholder="500">`;
+  }
+  if(row.type==="token"){
+    return `<label style="margin-top:0;">Cảnh giới token đột phá</label>
+      <select data-rw-stage="${i}">${CANH_GIOI.map(([v,l])=>`<option value="${v}" ${row.stage===v?"selected":""}>${l}</option>`).join("")}</select>`;
+  }
+  if(row.type==="phabao"){
+    return `<div class="two-col">
+      <div><label style="margin-top:0;">Phẩm cấp</label>
+        <select data-rw-tier="${i}">${PHABAO_TIER.map(([v,l])=>`<option value="${v}" ${row.tier===v?"selected":""}>${l}</option>`).join("")}</select>
+      </div>
+      <div><label style="margin-top:0;">Loại (để trống=ngẫu nhiên)</label>
+        <input type="text" data-rw-ptype="${i}" value="${esc(row.ptype)}" placeholder="VD: LINH_KIEM">
+      </div>
+    </div>`;
+  }
+  // custom
+  return `<label style="margin-top:0;">Mô tả thưởng (hiện cho người chơi)</label>
+    <input type="text" data-rw-rawdisplay="${i}" value="${esc(row.rawDisplay)}" placeholder="VD: 5 viên Kim Cương">
+    <label>Lệnh console tương ứng</label>
+    <input type="text" class="mono" data-rw-rawcommand="${i}" value="${esc(row.rawCommand)}" placeholder="vd: give {player} diamond 5">`;
+}
+function rewardRowHTML(row, i){
+  return `<div class="row" data-ri="${i}">
+    ${rewardRows.length>1 ? `<div class="row-remove" data-remove-reward="${i}">✕</div>` : ""}
+    <label style="margin-top:0;">Loại thưởng</label>
+    <select data-rw-type="${i}">
+      <option value="money" ${row.type==="money"?"selected":""}>Linh Thạch (tiền)</option>
+      <option value="token" ${row.type==="token"?"selected":""}>Token Đột Phá</option>
+      <option value="phabao" ${row.type==="phabao"?"selected":""}>Pháp Bảo</option>
+      <option value="custom" ${row.type==="custom"?"selected":""}>Tuỳ chỉnh (lệnh khác)</option>
+    </select>
+    <div class="rw-sub">${rewardSubfields(row,i)}</div>
+    <label>Mô tả hiển thị (để trống = tự tạo)</label>
+    <input type="text" data-rw-override="${i}" value="${esc(row.displayOverride)}" placeholder="VD: 1 Token Luyện Khí dùng để đột phá thẳng cấp!">
+  </div>`;
+}
+function renderRewardRows(){
+  $("rewardRows").innerHTML = rewardRows.map(rewardRowHTML).join("");
+}
+$("addRewardRow").addEventListener("click", ()=>{
+  rewardRows.push({type:"money", amount:"500", stage:"LUYEN_KHI", tier:"DIA_PHAM", ptype:"", rawDisplay:"", rawCommand:"", displayOverride:""});
+  renderRewardRows();
+  refresh();
+});
+$("rewardRows").addEventListener("click", e=>{
+  const ri = e.target.getAttribute("data-remove-reward");
+  if(ri!==null){ rewardRows.splice(ri,1); renderRewardRows(); refresh(); }
+});
+$("rewardRows").addEventListener("change", e=>{
+  const ti = e.target.getAttribute("data-rw-type");
+  if(ti!==null){ rewardRows[ti].type = e.target.value; renderRewardRows(); refresh(); return; }
+  const si = e.target.getAttribute("data-rw-stage");
+  if(si!==null){ rewardRows[si].stage = e.target.value; refresh(); }
+  const tri = e.target.getAttribute("data-rw-tier");
+  if(tri!==null){ rewardRows[tri].tier = e.target.value; refresh(); }
+});
+$("rewardRows").addEventListener("input", e=>{
+  const map = {"data-rw-amount":"amount","data-rw-ptype":"ptype","data-rw-rawdisplay":"rawDisplay","data-rw-rawcommand":"rawCommand","data-rw-override":"displayOverride"};
+  for(const attr in map){
+    const idx = e.target.getAttribute(attr);
+    if(idx!==null){ rewardRows[idx][map[attr]] = e.target.value; }
+  }
+  refresh();
+});
+
+// ---------------------------------------------------------------
+// EN toggle
+// ---------------------------------------------------------------
+$("enToggleRow").addEventListener("click", ()=>{
+  const on = $("enToggle").classList.toggle("on");
+  $("enFields").classList.toggle("show", on);
+  refresh();
+});
+
+// ---------------------------------------------------------------
+// Derived data builders
+// ---------------------------------------------------------------
+function stageLabel(v){ const f=CANH_GIOI.find(x=>x[0]===v); return f?f[1]:v; }
+function tierLabel(v){ const f=PHABAO_TIER.find(x=>x[0]===v); return f?f[1]:v; }
+
+function rewardDisplay(row){
+  if(row.displayOverride) return row.displayOverride;
+  if(row.type==="money") return `${row.amount||0} Linh Thạch`;
+  if(row.type==="token") return `1 Token Đột Phá (${stageLabel(row.stage)})`;
+  if(row.type==="phabao") return `Pháp Bảo ${tierLabel(row.tier)}${row.ptype? " - "+row.ptype : ""}`;
+  return row.rawDisplay || "(chưa mô tả)";
+}
+function rewardCommand(row){
+  if(row.type==="money") return `ttadmin give tien {player} ${row.amount||0}`;
+  if(row.type==="token") return `ttadmin dotpha_token {player} ${row.stage}`;
+  if(row.type==="phabao") return `ttadmin give phabao {player} ${row.tier}${row.ptype? " "+row.ptype : ""}`;
+  return row.rawCommand || "(chưa nhập lệnh)";
+}
+
+function collectForm(){
+  return {
+    name: $("qName").value.trim(),
+    tag: $("qTag").value.trim(),
+    sub: $("qSub").value.trim(),
+    icon: $("qIcon").value,
+    desc: $("qDesc").value.trim(),
+    hasEn: $("enToggle").classList.contains("on"),
+    nameEn: $("qNameEn").value.trim(),
+    descEn: $("qDescEn").value.trim(),
+    objType: $("qObjType").value,
+    reqs: reqRows.filter(r=>r.name || r.qty),
+    rewards: rewardRows
+  };
+}
+
+// ---------------------------------------------------------------
+// Preview
+// ---------------------------------------------------------------
+function renderPreview(q){
+  $("pTag").innerHTML = q.tag ? `[${mcToHtml(q.tag, "#7fd8cf")}]` : "";
+  $("pName").innerHTML = mcToHtml(q.name, "#e9e2cf") || "Tên nhiệm vụ";
+  $("pSub").textContent = `(${q.reqs.length||0}/${q.reqs.length||0}) [ ${q.sub || "Nhiệm Vụ Tu Tiên"} ]`;
+  $("pDesc").innerHTML = q.desc ? mcToHtml(q.desc, "#93a099") : "Mô tả nhiệm vụ sẽ hiện ở đây…";
+  $("pReqs").innerHTML = q.reqs.length
+    ? q.reqs.map(r=>`<div class="prev-req">» ${mcToHtml(r.name,"#93a099")||"(chưa đặt tên)"} <b>[${esc(r.qty)||"?"}]</b></div>`).join("")
+    : `<div class="prev-req">» chưa có yêu cầu nào</div>`;
+  $("pReward").innerHTML = q.rewards.length
+    ? q.rewards.map(r=>mcToHtml(rewardDisplay(r),"#7fd4b3")).join("  ·  ")
+    : "chưa có phần thưởng";
+}
+
+// ---------------------------------------------------------------
+// Steps
+// ---------------------------------------------------------------
+function renderSteps(q){
+  const steps = [];
+  steps.push(`Gõ <code>/quests create</code> trong game để mở trình tạo nhiệm vụ của BeautyQuests.`);
+  steps.push(`Đặt tên quest là <b>${esc(q.name)||"(tên bạn chọn)"}</b> và chọn icon đại diện <b>${q.icon}</b>.`);
+  steps.push(OBJ_HINTS[q.objType]);
+  if(q.reqs.length){
+    steps.push(`Nhập từng yêu cầu vào Stage: ${q.reqs.map(r=>`<b>${esc(r.name)||"?"}</b> × ${esc(r.qty)||"?"}`).join(", ")}.`);
+  }
+  if(q.desc){
+    steps.push(`Vào mục <b>Quest Description</b> và dán đoạn mô tả đã soạn sẵn ở khối “Bản dữ liệu” bên dưới.`);
+  }
+  if(q.rewards.length){
+    steps.push(`Vào <b>Rewards</b> của Stage cuối (hoặc quest-end rewards) → “Add reward” → chọn <b>Command</b> → dán từng lệnh sau (không cần dấu / ở đầu):<br>` +
+      q.rewards.map(r=>`<code>${esc(rewardCommand(r))}</code>`).join("<br>"));
+  }
+  steps.push(`Lưu nhiệm vụ (Save / Quit) rồi vào game thử bằng chính tài khoản của bạn để kiểm tra lại.`);
+  $("stepsList").innerHTML = steps.map(s=>`<li>${s}</li>`).join("");
+}
+
+// ---------------------------------------------------------------
+// Data sheet (plain-text export)
+// ---------------------------------------------------------------
+function buildSheetText(q){
+  const lines = [];
+  lines.push(`# ${q.name || "(chưa đặt tên)"}`);
+  lines.push(`tag: ${q.tag||"-"}`);
+  lines.push(`sub: ${q.sub||"-"}`);
+  lines.push(`icon: ${q.icon}`);
+  lines.push(`desc_vi: ${q.desc||"-"}`);
+  if(q.hasEn){
+    lines.push(`name_en: ${q.nameEn||"(chưa dịch)"}`);
+    lines.push(`desc_en: ${q.descEn||"(chưa dịch)"}`);
+  }
+  lines.push(`objective_type: ${q.objType}`);
+  lines.push(`requirements:`);
+  if(q.reqs.length) q.reqs.forEach(r=> lines.push(`  - ${r.name||"?"} [${r.qty||"?"}]`));
+  else lines.push(`  - (chưa có)`);
+  lines.push(`rewards:`);
+  if(q.rewards.length){
+    q.rewards.forEach(r=>{
+      lines.push(`  - display: ${rewardDisplay(r)}`);
+      lines.push(`    command: ${rewardCommand(r)}`);
+    });
+  } else lines.push(`  - (chưa có)`);
+  return lines.join("\n");
+}
+function renderSheet(q){
+  $("sheetOut").textContent = buildSheetText(q);
+}
+
+// ---------------------------------------------------------------
+// Refresh everything (no full form re-render, so typing keeps focus)
+// ---------------------------------------------------------------
+function refresh(){
+  const q = collectForm();
+  $("objHint").innerHTML = OBJ_HINTS[q.objType];
+  renderPreview(q);
+  renderSteps(q);
+  renderSheet(q);
+}
+["qName","qTag","qSub","qDesc","qNameEn","qDescEn"].forEach(id=>{
+  $(id).addEventListener("input", refresh);
+});
+$("qIcon").addEventListener("change", refresh);
+$("qObjType").addEventListener("change", refresh);
+
+// ---------------------------------------------------------------
+// Copy helper (works even if navigator.clipboard is blocked)
+// ---------------------------------------------------------------
+function copyText(text, btn){
+  const done = ()=>{
+    showToast("Đã sao chép ✓");
+    if(btn){ btn.classList.add("done"); const old=btn.textContent; btn.textContent="Đã chép ✓"; setTimeout(()=>{btn.classList.remove("done"); btn.textContent=old;},1400); }
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text, done));
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+function fallbackCopy(text, cb){
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try{ document.execCommand("copy"); cb(); }catch(e){ showToast("Không thể tự sao chép — hãy bôi đen và Ctrl+C"); }
+  document.body.removeChild(ta);
+}
+let toastTimer;
+function showToast(msg){
+  const t = $("toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove("show"), 1800);
+}
+$("copySheetBtn").addEventListener("click", e=> copyText($("sheetOut").textContent, e.currentTarget));
+
+// ---------------------------------------------------------------
+// Bank (save many quests in one session)
+// ---------------------------------------------------------------
+function renderBank(){
+  $("bankCount").textContent = bank.length;
+  if(!bank.length){
+    $("bankBody").innerHTML = `<div class="bank-empty">Chưa lưu nhiệm vụ nào — điền form phía trên rồi bấm “Lưu nhiệm vụ vào kho”.</div>`;
+    return;
+  }
+  $("bankBody").innerHTML = `<div class="bank-grid">` + bank.map((q,i)=>`
+    <div class="bank-item">
+      <div class="bi-title">${q.tag?`<span>[${esc(q.tag)}]</span> `:""}${esc(q.name)||"(chưa đặt tên)"}</div>
+      <div class="bi-sub">${q.reqs.length} yêu cầu · ${q.rewards.length} phần thưởng</div>
+      <div class="bi-actions">
+        <div class="btn" data-load="${i}">Mở lại</div>
+        <div class="btn btn-copy" data-copy="${i}">Sao chép</div>
+        <div class="btn" data-del="${i}" style="color:#e79684;">Xoá</div>
+      </div>
+    </div>`).join("") + `</div>`;
+}
+$("bankBody").addEventListener("click", e=>{
+  const li = e.target.getAttribute("data-load");
+  const ci = e.target.getAttribute("data-copy");
+  const di = e.target.getAttribute("data-del");
+  if(li!==null) loadFromBank(+li);
+  if(ci!==null) copyText(buildSheetText(bank[+ci]), e.target);
+  if(di!==null){ bank.splice(+di,1); renderBank(); }
+});
+function loadFromBank(i){
+  const q = bank[i];
+  $("qName").value = q.name; $("qTag").value = q.tag; $("qSub").value = q.sub;
+  $("qIcon").value = q.icon; $("qDesc").value = q.desc;
+  $("enToggle").classList.toggle("on", q.hasEn); $("enFields").classList.toggle("show", q.hasEn);
+  $("qNameEn").value = q.nameEn||""; $("qDescEn").value = q.descEn||"";
+  $("qObjType").value = q.objType;
+  reqRows = q.reqs.length ? JSON.parse(JSON.stringify(q.reqs)) : [{name:"",qty:""}];
+  rewardRows = q.rewards.length ? JSON.parse(JSON.stringify(q.rewards)) : [{type:"money",amount:"500",stage:"LUYEN_KHI",tier:"DIA_PHAM",ptype:"",rawDisplay:"",rawCommand:"",displayOverride:""}];
+  renderReqRows(); renderRewardRows(); refresh();
+  window.scrollTo({top:0, behavior:"smooth"});
+  showToast("Đã nạp nhiệm vụ vào form ✓");
+}
+
+$("saveBtn").addEventListener("click", ()=>{
+  const q = collectForm();
+  if(!q.name){
+    $("qName").style.borderColor = "var(--cinnabar)";
+    $("qName").focus();
+    showToast("Cần đặt tên nhiệm vụ trước đã!");
+    return;
+  }
+  $("qName").style.borderColor = "";
+  bank.push(q);
+  renderBank();
+  showToast(`Đã lưu vào kho ✓ (tổng ${bank.length} nhiệm vụ)`);
+});
+$("copyAllBtn").addEventListener("click", e=>{
+  if(!bank.length){ showToast("Kho chưa có nhiệm vụ nào"); return; }
+  const all = bank.map(buildSheetText).join("\n\n" + "─".repeat(40) + "\n\n");
+  copyText(all, e.currentTarget);
+});
+
+// ---------------------------------------------------------------
+// Init
+// ---------------------------------------------------------------
+renderReqRows();
+renderRewardRows();
+renderBank();
+refresh();
+</script>
+</body>
+</html>
