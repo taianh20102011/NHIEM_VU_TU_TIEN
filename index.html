@@ -166,6 +166,7 @@
   .prev-title .name{color:var(--parchment);}
   .prev-sub{font-size:12px; color:var(--muted-2); margin-bottom:12px;}
   .prev-desc{font-size:13px; color:var(--muted); font-style:italic; line-height:1.6; margin-bottom:16px; max-width:80%;}
+  .prev-lock{font-size:11.5px; color:var(--gold-soft); margin-bottom:10px; display:flex; align-items:center; gap:5px;}
   .prev-h{font-size:13px; font-weight:700; color:var(--parchment); margin-bottom:6px;}
   .prev-req{font-size:12.8px; color:var(--muted); margin-bottom:3px; padding-left:2px;}
   .prev-req b{color:var(--parchment); font-weight:600;}
@@ -301,7 +302,32 @@
       </div>
 
       <div class="card">
-        <h2><span class="num">2</span>Yêu cầu hoàn thành</h2>
+        <h2><span class="num">2</span>Điều kiện nhận quest (cảnh giới)</h2>
+        <label>Chặn theo cảnh giới?</label>
+        <select id="qStageMode">
+          <option value="none">Không giới hạn — ai cũng nhận được</option>
+          <option value="exact">Đúng 1 cảnh giới cụ thể</option>
+          <option value="atleast">Từ 1 cảnh giới trở lên</option>
+          <option value="realm">Thuộc 1 Đại Giới (nhóm lớn)</option>
+        </select>
+
+        <div id="stageExactWrap" style="display:none;">
+          <label style="margin-top:0;">Cảnh giới</label>
+          <select id="qStageExact"></select>
+        </div>
+        <div id="stageAtleastWrap" style="display:none;">
+          <label style="margin-top:0;">Từ cảnh giới nào trở lên</label>
+          <select id="qStageAtleast"></select>
+        </div>
+        <div id="stageRealmWrap" style="display:none;">
+          <label style="margin-top:0;">Đại Giới</label>
+          <select id="qStageRealm"></select>
+        </div>
+        <div class="hint" id="stageReqHint"></div>
+      </div>
+
+      <div class="card">
+        <h2><span class="num">3</span>Yêu cầu hoàn thành</h2>
         <label>Loại mục tiêu</label>
         <select id="qObjType">
           <option value="kill">Giết quái (thường hoặc MythicMobs)</option>
@@ -316,7 +342,7 @@
       </div>
 
       <div class="card">
-        <h2><span class="num">3</span>Phần thưởng</h2>
+        <h2><span class="num">4</span>Phần thưởng</h2>
         <div id="rewardRows"></div>
         <div class="btn btn-add" id="addRewardRow">+ Thêm phần thưởng</div>
       </div>
@@ -333,6 +359,7 @@
           <div class="prev-kicker">Quests</div>
           <div class="prev-title"><span class="tag" id="pTag">[Luyện Khí]</span> <span class="name" id="pName">Tên nhiệm vụ</span></div>
           <div class="prev-sub" id="pSub">(0/0) [ Nhiệm Vụ Tu Tiên ]</div>
+          <div class="prev-lock" id="pLock" style="display:none;"></div>
           <div class="prev-desc" id="pDesc">Mô tả nhiệm vụ sẽ hiện ở đây…</div>
           <div class="prev-h">Yêu cầu nhiệm vụ:</div>
           <div id="pReqs"><div class="prev-req">» chưa có yêu cầu nào</div></div>
@@ -372,12 +399,17 @@
 // ---------------------------------------------------------------
 // Reference data pulled from the actual TuTien plugin commands
 // ---------------------------------------------------------------
+// 3rd value = the exact plain-text %tutien_stage_plain% value the game sends (no diacritics — must match 1:1)
 const CANH_GIOI = [
-  ["LUYEN_KHI","Luyện Khí"],["TRUC_CO","Trúc Cơ"],["KET_DAN","Kết Đan"],["NGUYEN_ANH","Nguyên Anh"],["HOA_THAN","Hóa Thần"],
-  ["DE_TU","Đế Tử"],["DE_HAU","Đế Hầu"],["DE_VUONG","Đế Vương"],["DE_TON","Đế Tôn"],["DE_CHU","Đế Chủ"],
-  ["BAN_THANH","Bán Thánh"],["CHUAN_THANH","Chuẩn Thánh"],["DAI_THANH","Đại Thánh"],["THANH_TON","Thánh Tôn"],["THANH_DE","Thánh Đế"],
-  ["CHAN_TIEN","Chân Tiên"],["KIM_TIEN","Kim Tiên"],["THAI_AT","Thái Ất"],["DAI_LA","Đại La"],["TIEN_DE","Tiên Đế"],
-  ["THIEN_TON","Thiên Tôn"],["THIEN_DAO","Thiên Đạo"],["THIEN_DE","Thiên Đế"],["HON_NGUYEN","Hỗn Nguyên"],["VO_THUONG_CHI_TON","Vô Thượng Chí Tôn"]
+  ["LUYEN_KHI","Luyện Khí","Luyen Khi"],["TRUC_CO","Trúc Cơ","Truc Co"],["KET_DAN","Kết Đan","Ket Dan"],["NGUYEN_ANH","Nguyên Anh","Nguyen Anh"],["HOA_THAN","Hóa Thần","Hoa Than"],
+  ["DE_TU","Đế Tử","De Tu"],["DE_HAU","Đế Hầu","De Hau"],["DE_VUONG","Đế Vương","De Vuong"],["DE_TON","Đế Tôn","De Ton"],["DE_CHU","Đế Chủ","De Chu"],
+  ["BAN_THANH","Bán Thánh","Ban Thanh"],["CHUAN_THANH","Chuẩn Thánh","Chuan Thanh"],["DAI_THANH","Đại Thánh","Dai Thanh"],["THANH_TON","Thánh Tôn","Thanh Ton"],["THANH_DE","Thánh Đế","Thanh De"],
+  ["CHAN_TIEN","Chân Tiên","Chan Tien"],["KIM_TIEN","Kim Tiên","Kim Tien"],["THAI_AT","Thái Ất","Thai At"],["DAI_LA","Đại La","Dai La"],["TIEN_DE","Tiên Đế","Tien De"],
+  ["THIEN_TON","Thiên Tôn","Thien Ton"],["THIEN_DAO","Thiên Đạo","Thien Dao"],["THIEN_DE","Thiên Đế","Thien De"],["HON_NGUYEN","Hỗn Nguyên","Hon Nguyen"],["VO_THUONG_CHI_TON","Vô Thượng Chí Tôn","Vo Thuong Chi Ton"]
+];
+// %tutien_realm% value (plain) -> Vietnamese label
+const REALM_GROUPS = [
+  ["Linh Gioi","Linh Giới"],["De Gioi","Đế Giới"],["Thanh Gioi","Thánh Giới"],["Tien Gioi","Tiên Giới"],["Thien Gioi","Thiên Giới"]
 ];
 const PHABAO_TIER = [
   ["DIA_PHAM","Địa Phẩm"],["HA_PHAM","Hạ Phẩm"],["TRUNG_PHAM","Trung Phẩm"],
@@ -597,6 +629,43 @@ $("enToggleRow").addEventListener("click", ()=>{
 });
 
 // ---------------------------------------------------------------
+// Stage requirement (điều kiện nhận quest theo cảnh giới)
+// ---------------------------------------------------------------
+$("qStageExact").innerHTML = CANH_GIOI.map(c=>`<option value="${c[0]}">${c[1]}</option>`).join("");
+$("qStageAtleast").innerHTML = CANH_GIOI.map(c=>`<option value="${c[0]}">${c[1]}</option>`).join("");
+$("qStageRealm").innerHTML = REALM_GROUPS.map(r=>`<option value="${r[0]}">${r[1]}</option>`).join("");
+
+function updateStageModeUI(){
+  const mode = $("qStageMode").value;
+  $("stageExactWrap").style.display = mode==="exact" ? "block" : "none";
+  $("stageAtleastWrap").style.display = mode==="atleast" ? "block" : "none";
+  $("stageRealmWrap").style.display = mode==="realm" ? "block" : "none";
+}
+$("qStageMode").addEventListener("change", ()=>{ updateStageModeUI(); refresh(); });
+$("qStageExact").addEventListener("change", refresh);
+$("qStageAtleast").addEventListener("change", refresh);
+$("qStageRealm").addEventListener("change", refresh);
+updateStageModeUI();
+
+// Returns [{placeholder, op, value}] lines to plug into BeautyQuests' Placeholder Requirement
+function buildStageReqLines(mode, stageExact, stageAtleast, realm){
+  if(mode==="exact"){
+    const c = CANH_GIOI.find(x=>x[0]===stageExact);
+    return c ? [{placeholder:"%tutien_stage_plain%", op:"EQUALS", value:c[2], label:c[1]}] : [];
+  }
+  if(mode==="atleast"){
+    const idx = CANH_GIOI.findIndex(x=>x[0]===stageAtleast);
+    if(idx<0) return [];
+    return CANH_GIOI.slice(idx).map(c=>({placeholder:"%tutien_stage_plain%", op:"EQUALS", value:c[2], label:c[1]}));
+  }
+  if(mode==="realm"){
+    const r = REALM_GROUPS.find(x=>x[0]===realm);
+    return r ? [{placeholder:"%tutien_realm%", op:"EQUALS", value:r[0], label:r[1]}] : [];
+  }
+  return [];
+}
+
+// ---------------------------------------------------------------
 // Derived data builders
 // ---------------------------------------------------------------
 function stageLabel(v){ const f=CANH_GIOI.find(x=>x[0]===v); return f?f[1]:v; }
@@ -628,7 +697,11 @@ function collectForm(){
     descEn: $("qDescEn").value.trim(),
     objType: $("qObjType").value,
     reqs: reqRows.filter(r=>r.name || r.qty),
-    rewards: rewardRows
+    rewards: rewardRows,
+    stageMode: $("qStageMode").value,
+    stageExact: $("qStageExact").value,
+    stageAtleast: $("qStageAtleast").value,
+    stageRealm: $("qStageRealm").value
   };
 }
 
@@ -639,6 +712,16 @@ function renderPreview(q){
   $("pTag").innerHTML = q.tag ? `[${mcToHtml(q.tag, "#7fd8cf")}]` : "";
   $("pName").innerHTML = mcToHtml(q.name, "#e9e2cf") || "Tên nhiệm vụ";
   $("pSub").textContent = `(${q.reqs.length||0}/${q.reqs.length||0}) [ ${q.sub || "Nhiệm Vụ Tu Tiên"} ]`;
+  const stageLines = buildStageReqLines(q.stageMode, q.stageExact, q.stageAtleast, q.stageRealm);
+  if(stageLines.length){
+    const txt = q.stageMode==="atleast"
+      ? `Yêu cầu: từ ${stageLines[0].label} trở lên`
+      : `Yêu cầu: ${stageLines[0].label}`;
+    $("pLock").style.display = "flex";
+    $("pLock").innerHTML = `🔒 ${txt}`;
+  } else {
+    $("pLock").style.display = "none";
+  }
   $("pDesc").innerHTML = q.desc ? mcToHtml(q.desc, "#93a099") : "Mô tả nhiệm vụ sẽ hiện ở đây…";
   $("pReqs").innerHTML = q.reqs.length
     ? q.reqs.map(r=>`<div class="prev-req">» ${mcToHtml(r.name,"#93a099")||"(chưa đặt tên)"} <b>[${esc(r.qty)||"?"}]</b></div>`).join("")
@@ -655,6 +738,17 @@ function renderSteps(q){
   const steps = [];
   steps.push(`Gõ <code>/quests create</code> trong game để mở trình tạo nhiệm vụ của BeautyQuests.`);
   steps.push(`Đặt tên quest là <b>${esc(q.name)||"(tên bạn chọn)"}</b> và chọn icon đại diện <b>${q.icon}</b>.`);
+  const stageLines = buildStageReqLines(q.stageMode, q.stageExact, q.stageAtleast, q.stageRealm);
+  if(stageLines.length){
+    let s = `Vào tab <b>Requirements</b> của quest (không phải Stage) → “Add Requirement” → chọn <b>Placeholder Requirement</b> (cần bật PlaceholderAPI). `;
+    if(stageLines.length===1){
+      s += `Nhập: Placeholder <code>${stageLines[0].placeholder}</code>, Operator <code>${stageLines[0].op}</code>, Value <code>${stageLines[0].value}</code>.`;
+    } else {
+      s += `Thêm ${stageLines.length} dòng, mỗi dòng: Placeholder <code>${stageLines[0].placeholder}</code>, Operator <code>EQUALS</code>, Value là 1 trong: ${stageLines.map(l=>`<code>${l.value}</code>`).join(", ")}. `
+        + `Vì có nhiều dòng, nhớ đổi chế độ danh sách Requirements sang <b>“chỉ cần khớp 1 trong các dòng” (OR)</b> thay vì mặc định phải khớp hết (thường là icon ổ khoá/dấu cộng ở góc danh sách, tuỳ bản BeautyQuests).`;
+    }
+    steps.push(s);
+  }
   steps.push(OBJ_HINTS[q.objType]);
   if(q.reqs.length){
     steps.push(`Nhập từng yêu cầu vào Stage: ${q.reqs.map(r=>`<b>${esc(r.name)||"?"}</b> × ${esc(r.qty)||"?"}`).join(", ")}.`);
@@ -684,6 +778,12 @@ function buildSheetText(q){
     lines.push(`name_en: ${q.nameEn||"(chưa dịch)"}`);
     lines.push(`desc_en: ${q.descEn||"(chưa dịch)"}`);
   }
+  const stageLines = buildStageReqLines(q.stageMode, q.stageExact, q.stageAtleast, q.stageRealm);
+  lines.push(`start_requirement:`);
+  if(stageLines.length){
+    stageLines.forEach(l=> lines.push(`  - ${l.placeholder} ${l.op} ${l.value}   (${l.label})`));
+    if(stageLines.length>1) lines.push(`  - mode: OR (chỉ cần khớp 1 dòng)`);
+  } else lines.push(`  - (không giới hạn)`);
   lines.push(`objective_type: ${q.objType}`);
   lines.push(`requirements:`);
   if(q.reqs.length) q.reqs.forEach(r=> lines.push(`  - ${r.name||"?"} [${r.qty||"?"}]`));
@@ -780,6 +880,11 @@ function loadFromBank(i){
   $("enToggle").classList.toggle("on", q.hasEn); $("enFields").classList.toggle("show", q.hasEn);
   $("qNameEn").value = q.nameEn||""; $("qDescEn").value = q.descEn||"";
   $("qObjType").value = q.objType;
+  $("qStageMode").value = q.stageMode||"none";
+  $("qStageExact").value = q.stageExact||"LUYEN_KHI";
+  $("qStageAtleast").value = q.stageAtleast||"LUYEN_KHI";
+  $("qStageRealm").value = q.stageRealm||"Linh Gioi";
+  updateStageModeUI();
   reqRows = q.reqs.length ? JSON.parse(JSON.stringify(q.reqs)) : [{name:"",qty:""}];
   rewardRows = q.rewards.length ? JSON.parse(JSON.stringify(q.rewards)) : [{type:"money",amount:"500",stage:"LUYEN_KHI",tier:"DIA_PHAM",ptype:"",rawDisplay:"",rawCommand:"",displayOverride:""}];
   renderReqRows(); renderRewardRows(); refresh();
